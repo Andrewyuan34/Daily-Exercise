@@ -1,7 +1,7 @@
-#include "../src/BFS.h" 
+#include "../src/Algorithm.h" 
 #include <iostream>
 
-//need more test
+// need more test
 
 // Compile-time BFS execution
 constexpr auto test_bfs_compile_time() {

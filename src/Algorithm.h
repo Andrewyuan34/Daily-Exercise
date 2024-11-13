@@ -3,6 +3,9 @@
 
 #include <array>
 #include <cstddef> 
+//#include <format>
+#include <stdexcept>
+#include <iostream>
 
 /**
  * Breadth-First Search (BFS) algorithm specification.
@@ -111,6 +114,49 @@ constexpr void dfs(const std::array<std::array<int, N>, N>& graph, int startNode
                 stack[top++] = neighbor; // Push neighbor onto the stack
                 visited[neighbor] = true;
             }
+        }
+    }
+}
+
+template<size_t N>
+constexpr int calculateXorSum(const std::array<int, N>& piles) {
+    if (N == 0) throw std::invalid_argument("Error: The array of piles cannot be empty.");
+    
+    int xorSum = 0;
+    for (int pile : piles) {
+        if (pile < 0) throw std::invalid_argument("Error: Pile cannot contain a negative number.");
+        xorSum ^= pile;
+    }
+    return xorSum;
+}
+
+template<size_t N>
+constexpr bool canWinNim(const std::array<int, N>& piles) {
+    return calculateXorSum(piles) != 0;
+}
+
+/**
+ * Nim Game Optimal Move algorithm specification.
+ * 
+ * This function identifies the optimal move by adjusting one of the piles so that the 
+ * XOR sum becomes zero. It modifies the original array `piles` to reflect the move.
+ * 
+ * @tparam N The size of the array.
+ * @param piles An array of integers representing the number of stones in each pile.
+ * 
+ * @complexity Time Complexity: O(N), where N is the number of piles.
+ * @complexity Space Complexity: O(1).
+ */
+template<size_t N>
+constexpr void Nim_makeOptimalMove(std::array<int, N>& piles) {
+    int xorSum = calculateXorSum(piles);
+
+    // Traverse all piles to find a move that makes the XOR sum zero
+    for (size_t i = 0; i < N; ++i) {
+        int targetPile = piles[i] ^ xorSum;
+        if (targetPile < piles[i]) {
+            piles[i] = targetPile; // Update the pile after taking stones
+            return;
         }
     }
 }

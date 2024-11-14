@@ -3,9 +3,13 @@
 
 #include <array>
 #include <cstddef> 
-//#include <format>
+#include <format>
 #include <stdexcept>
 #include <iostream>
+#include <vector>
+#include <optional>
+#include <iomanip>
+
 
 /**
  * Breadth-First Search (BFS) algorithm specification.
@@ -160,5 +164,54 @@ constexpr void Nim_makeOptimalMove(std::array<int, N>& piles) {
         }
     }
 }
+
+/**
+ * Simple Moving Average (SMA) algorithm specification.
+ * 
+ * Purpose:
+ * The Simple Moving Average (SMA) is a statistical tool used in financial markets 
+ * to smooth out short-term fluctuations and highlight longer-term trends in time series data.
+ * This function computes the SMA for a given set of stock prices using a fixed window size.
+ * 
+ * Parameters:
+ * - prices: A vector of doubles representing the historical prices.
+ * - window: An integer representing the size of the moving average window.
+ * - result: A vector of doubles to store the computed moving averages.
+ * 
+ * Preconditions:
+ * - The `prices` vector is non-empty and contains historical stock prices.
+ * - The `window` parameter is a positive integer.
+ * - The `result` vector is prepared to store the computed moving averages.
+ * 
+ * Postconditions:
+ * - The `result` vector contains the SMA values computed over the specified window size.
+ * - If the window size is larger than the number of data points, the `result` vector remains empty.
+ * - The `result` vector only includes averages for complete windows (i.e., the calculation starts only when enough data is available).
+ * 
+ * Complexity:
+ * - Time Complexity: O(N), where `N` is the number of prices in the input vector.
+ * - Space Complexity: O(M), where `M` is the number of computed moving averages.
+ */
+std::optional<std::vector<double>> computeSMA(const std::vector<double>& prices, int window) {
+    // Check for invalid inputs
+    if (prices.empty() || window <= 0 || window > static_cast<int>(prices.size())) return std::nullopt;
+    std::vector<double> result;
+    double sum = 0.0;
+
+    // Pre-compute the first SMA
+    for (int i = 0; i < window; ++i) {
+        sum += prices[i];
+    }
+    result.push_back(sum / window);
+
+    // Move the window and update the SMA
+    for (size_t i = window; i < prices.size(); ++i) {
+        sum += prices[i] - prices[i - window];
+        result.push_back(sum / window);
+    }
+
+    return result;
+}
+
 
 #endif
